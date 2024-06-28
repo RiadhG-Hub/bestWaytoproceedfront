@@ -40,6 +40,8 @@ dependencies:
       url: https://github.com/riadhrahma/bestwaytoproceedcore.git
       ref: dev
   camera: ^0.11.0+1
+  video_player: ^2.8.7
+  image: ^4.2.0
 
 dev_dependencies:
   flutter_test:
