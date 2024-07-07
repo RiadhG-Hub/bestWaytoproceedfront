@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:bestwaytoproceed/bestwaytoproceed.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -63,17 +65,37 @@ class _CameraExampleHomeState extends State<CameraExampleHome> with WidgetsBindi
   double _maxAvailableZoom = 1.0;
   double _currentScale = 1.0;
   double _baseScale = 1.0;
+  late ImageComparison _comparator;
 
   // Counting pointers (number of user fingers on screen)
   int _pointers = 0;
-
-  void _checkFeatures({required CameraController controller}) {
-    controller.startImageStream((CameraImage cameraImage) async {});
+  Timer? timer;
+  void startTimer() {
+    try {
+      timer ??= Timer.periodic(const Duration(seconds: 10), (timer) async {
+        log('timer cycle start');
+        if (controller != null) {
+          log('controller is not equal to null');
+          log('take a picture and wait for the result');
+          final XFile imageResult = await controller!.takePicture();
+          log("image result done");
+          log('waiting for the ai response');
+          final result = await _comparator.compareImages(images: imageResult);
+          log('the ai result is: $result');
+          assert(result != null, 'the result should be different to null');
+        }
+      });
+    } catch (e, s) {
+      log('error: $e, stack: $s');
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    const apiKey = "AIzaSyA2sQyyq3cYUqakisqqzkrTENm7GWu8w7g";
+    _comparator = ImageComparison(apiKey);
+    startTimer();
     WidgetsBinding.instance.addObserver(this);
 
     _flashModeControlRowAnimationController = AnimationController(
@@ -107,6 +129,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> with WidgetsBindi
     WidgetsBinding.instance.removeObserver(this);
     _flashModeControlRowAnimationController.dispose();
     _exposureModeControlRowAnimationController.dispose();
+    timer!.cancel();
     super.dispose();
   }
 
@@ -148,7 +171,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> with WidgetsBindi
               child: Padding(
                 padding: const EdgeInsets.all(1.0),
                 child: Center(
-                  child: _cameraPreviewWidget(),
+                  child: const Text('exmaple'),
                 ),
               ),
             ),
@@ -186,17 +209,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> with WidgetsBindi
       return Listener(
         onPointerDown: (_) => _pointers++,
         onPointerUp: (_) => _pointers--,
-        child: CameraPreview(
-          controller!,
-          child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onScaleStart: _handleScaleStart,
-              onScaleUpdate: _handleScaleUpdate,
-              onTapDown: (TapDownDetails details) => onViewFinderTap(details, constraints),
-            );
-          }),
-        ),
+        child: const Text('example'),
       );
     }
   }
@@ -523,7 +536,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> with WidgetsBindi
       });
       return const Text('None');
     } else {
-      for (final CameraDescription cameraDescription in _cameras) {
+      for (final CameraDescription cameraDescription in [_cameras.first]) {
         toggles.add(
           SizedBox(
             width: 90.0,
