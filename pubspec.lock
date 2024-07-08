@@ -44,11 +44,9 @@ packages:
   bestwaytoproceed:
     dependency: "direct main"
     description:
-      path: "."
-      ref: dev
-      resolved-ref: "5879267971dce93a251d14f7484724c7a78d9a41"
-      url: "https://github.com/riadhrahma/bestwaytoproceedcore.git"
-    source: git
+      path: "../bestwaytoproceedcore"
+      relative: true
+    source: path
     version: "0.0.1"
   boolean_selector:
     dependency: transitive
