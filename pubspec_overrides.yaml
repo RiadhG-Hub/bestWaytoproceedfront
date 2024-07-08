@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: bestwaytoproceed
+dependency_overrides:
+  bestwaytoproceed:
+    path: ../bestwaytoproceedcore
