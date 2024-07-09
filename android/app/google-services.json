@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "224943458926",
+    "project_id": "bestwaytoproceed",
+    "storage_bucket": "bestwaytoproceed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224943458926:android:75dffdb83d4c8bf0f2747f",
+        "android_client_info": {
+          "package_name": "com.example.bestwaytoproceedfront"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqX9bgBXnD8khc-SqF64KmwR0cNcwSn68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
