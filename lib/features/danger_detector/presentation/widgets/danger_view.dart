@@ -1,6 +1,7 @@
 import 'package:bestwaytoproceed/models/way_data.dart';
 import 'package:bestwaytoproceedanalyze/core/danger_class.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 /// A widget that displays the danger level and related data.
 ///
@@ -48,22 +49,29 @@ class DangerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
+    // final Size screenSize = MediaQuery.of(context).size;
 
-    return Container(
-      color: getColorForDangerClass(dangerClass),
-      height: screenSize.height / 1.6,
-      width: screenSize.width,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(dangerClass.name, style: Theme.of(context).textTheme.displayLarge),
-            Text('Safety Percentage: ${wayData.safetyPercentage}', style: Theme.of(context).textTheme.displayMedium),
-            Text('Proceed Phrase: ${wayData.proceedPhrase}', style: Theme.of(context).textTheme.displayMedium),
-            Text('Road Type: ${wayData.roadType}', style: Theme.of(context).textTheme.displayMedium),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LoadingAnimationWidget.halfTriangleDot(
+            color: getColorForDangerClass(dangerClass),
+            size: 200,
+          ),
+          Text(
+            dangerClass.name,
+          ),
+          Text(
+            'Safety Percentage: ${wayData.safetyPercentage}',
+          ),
+          Text(
+            'Proceed Phrase: ${wayData.proceedPhrase}',
+          ),
+          Text(
+            'Road Type: ${wayData.roadType}',
+          ),
+        ],
       ),
     );
   }

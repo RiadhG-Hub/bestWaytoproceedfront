@@ -6,6 +6,7 @@ import 'package:bestwaytoproceedanalyze/bestwaytoproceedanalyze.dart';
 import 'package:bestwaytoproceedanalyze/core/danger_class.dart';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:meta/meta.dart';
 import 'package:vibration/vibration.dart';
 
@@ -14,6 +15,8 @@ part 'analyze_manager_state.dart';
 
 /// The BLoC class responsible for managing the analysis process.
 class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> {
+  FlutterTts flutterTts = FlutterTts();
+
   /// API key for the generative AI model.
   static const apiKey = "AIzaSyA2sQyyq3cYUqakisqqzkrTENm7GWu8w7g";
 
@@ -22,6 +25,12 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
 
   /// List of available camera descriptions.
   static List<CameraDescription> cameras = [];
+  static CameraController? controller;
+  Future<void> _speak({required List<String> texts}) async {
+    for (var text in texts) {
+      await flutterTts.speak(text);
+    }
+  }
 
   /// Constructs an instance of [AnalyzeManagerBloc].
   AnalyzeManagerBloc() : super(AnalyzeManagerInitial()) {
@@ -36,39 +45,27 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
           }
 
           // Initialize the camera controller
-          CameraController controller = CameraController(cameras[0], ResolutionPreset.max);
-          await controller.initialize();
+          controller = CameraController(cameras[0], ResolutionPreset.low);
+          await controller!.initialize();
 
           log('Taking picture...');
-          final XFile imageResult = await controller.takePicture();
+          final XFile imageResult = await controller!.takePicture();
           log("Picture taken successfully");
 
           log('Sending image to AI for analysis...');
           final result = await comparator.compareImages(image: imageResult);
           log('AI analysis result: $result');
 
-          // Check for vibration control
-          final bool? hasAmplitudeControl = await Vibration.hasAmplitudeControl();
           final int vibrationDuration = (100 - (result!.safetyPercentage ?? 0).toInt()).toInt();
 
-          if (hasAmplitudeControl != null && hasAmplitudeControl) {
-            log("Vibrating with amplitude control...");
-            Vibration.vibrate(
-                amplitude: vibrationDuration,
-                duration: vibrationDuration,
-                pattern: [500, 1000, 500, 2000],
-                intensities: [1, 255]);
-          } else {
-            log("Vibrating without amplitude control...");
-            Vibration.vibrate(duration: vibrationDuration, pattern: [500, 1000, 500, 2000], intensities: [1, 255]);
-          }
+          Vibration.vibrate(duration: vibrationDuration, pattern: [500, 1000, 500, 2000], intensities: [1, 255]);
 
           // Perform further analysis and save data if needed
           final BestWayAnalyze bestWayAnalyze = BestWayAnalyze(result);
-          final analyzeResult = await bestWayAnalyze.analyze(saveData: true);
-
+          final analyzeResult = await bestWayAnalyze.analyze();
+          _speak(texts: [analyzeResult.name, analyzeResult.name, result.proceedPhrase ?? "", result.roadType ?? ""]);
           // Dispose of the camera controller
-          await controller.dispose();
+          await controller!.dispose();
 
           // Emit success state with the analysis result
           emit(TakePictureStartAnalyzeSuccess(analyzeResult, result));
