@@ -3,6 +3,7 @@ import 'package:bestwaytoproceedfront/features/danger_detector/presentation/widg
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// A [StatelessWidget] that represents the home screen of the application.
 class Home extends StatelessWidget {
   const Home({super.key});
 
@@ -13,30 +14,36 @@ class Home extends StatelessWidget {
         actions: [
           MaterialButton(
             onPressed: () {
+              // Dispatches an event to start the image analysis process.
               context.read<AnalyzeManagerBloc>().add(TakePictureStartAnalyze());
             },
-            child: const Text('analyze image'),
+            child: const Text('Analyze Image'),
           )
         ],
       ),
       body: Center(
-        child: BlocBuilder<AnalyzeManagerBloc, AnalyzeManagerState>(builder: (context, state) {
-          if (state is TakePictureStartAnalyzeLoading) {
-            return const Text('Loading');
-          }
-          if (state is TakePictureStartAnalyzeFailed) {
-            return Text(state.message);
-          }
-          if (state is TakePictureStartAnalyzeSuccess) {
-            return DangerView(state.dangerClass, state.wayData);
-          }
-          return Text(state.toString());
-        }, buildWhen: (
-          oldState,
-          newState,
-        ) {
-          return oldState != newState;
-        }),
+        child: BlocBuilder<AnalyzeManagerBloc, AnalyzeManagerState>(
+          builder: (context, state) {
+            if (state is TakePictureStartAnalyzeLoading) {
+              // Displays a loading message while the image is being analyzed.
+              return const Text('Loading...');
+            }
+            if (state is TakePictureStartAnalyzeFailed) {
+              // Displays an error message if the analysis fails.
+              return Text('Error: ${state.message}');
+            }
+            if (state is TakePictureStartAnalyzeSuccess) {
+              // Displays the danger view with the analysis results.
+              return DangerView(state.dangerClass, state.wayData);
+            }
+            // Displays the current state if it doesn't match any specific case.
+            return Text('State: ${state.toString()}');
+          },
+          buildWhen: (oldState, newState) {
+            // Rebuilds the widget only when the state changes.
+            return oldState != newState;
+          },
+        ),
       ),
     );
   }

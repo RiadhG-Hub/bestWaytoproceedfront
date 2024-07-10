@@ -52,7 +52,7 @@ class _CameraAppState extends State<CameraApp> {
       final XFile imageResult = await controller.takePicture();
       log("image result done");
       log('waiting for the ai response');
-      final result = await _comparator.compareImages(images: imageResult);
+      final result = await _comparator.compareImages(image: imageResult);
       log('the ai result is: $result');
       final bool? hasAmplitudeControl = await Vibration.hasAmplitudeControl();
       if (hasAmplitudeControl != null && hasAmplitudeControl) {

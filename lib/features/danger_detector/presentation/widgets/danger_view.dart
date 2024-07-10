@@ -2,12 +2,23 @@ import 'package:bestwaytoproceed/models/way_data.dart';
 import 'package:bestwaytoproceedanalyze/core/danger_class.dart';
 import 'package:flutter/material.dart';
 
+/// A widget that displays the danger level and related data.
+///
+/// The background color of the widget changes based on the danger level.
 class DangerView extends StatelessWidget {
+  /// The danger classification.
   final DangerClass dangerClass;
+
+  /// The data related to the way being analyzed.
   final WayData wayData;
 
+  /// Constructs a [DangerView] widget with the given [dangerClass] and [wayData].
   const DangerView(this.dangerClass, this.wayData, {super.key});
 
+  /// Returns a color corresponding to the given [dangerClass].
+  ///
+  /// The color represents the severity of the danger, ranging from green (very safe)
+  /// to red (extremely hazardous).
   Color getColorForDangerClass(DangerClass dangerClass) {
     switch (dangerClass) {
       case DangerClass.verySafe:
@@ -47,10 +58,10 @@ class DangerView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(dangerClass.name),
-            Text(wayData.safetyPercentage.toString()),
-            Text(wayData.proceedPhrase.toString()),
-            Text(wayData.roadType.toString()),
+            Text(dangerClass.name, style: Theme.of(context).textTheme.displayLarge),
+            Text('Safety Percentage: ${wayData.safetyPercentage}', style: Theme.of(context).textTheme.displayMedium),
+            Text('Proceed Phrase: ${wayData.proceedPhrase}', style: Theme.of(context).textTheme.displayMedium),
+            Text('Road Type: ${wayData.roadType}', style: Theme.of(context).textTheme.displayMedium),
           ],
         ),
       ),
