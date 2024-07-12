@@ -1,16 +1,38 @@
-# bestwaytoproceedfront
+# BestWayToProceedFront
 
-A new Flutter project.
+A Flutter package designed to assist blind individuals by utilizing a phone camera and the Gemini AI system to determine whether it is safe to proceed. This package leverages advanced AI technology to provide real-time feedback and enhance the safety and independence of visually impaired users.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Capture images using the phone camera.
+- Analyze images with the Gemini AI system.
+- Provide audio feedback on whether it is safe to proceed.
+- User-friendly interface designed for accessibility.
 
-A few resources to get you started if this is your first Flutter project:
+## Getting started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Prerequisites
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter SDK: Ensure you have Flutter installed. You can download it [here](https://flutter.dev/docs/get-started/install).
+- Dart SDK: Make sure Dart is installed and up to date.
+- Device with a camera.
+- Internet connection for AI processing.
+
+
+## Additional information
+
+For more information, please visit our [documentation](https://github.com/riadhrahma/bestWaytoproceedfront/doc).
+
+### Contributing
+
+We welcome contributions!
+
+### Filing Issues
+
+
+
+If you encounter any issues, please file them [here](https://github.com/riadhrahma/bestWaytoproceedfront/issues). Our team will respond as quickly as possible.
+
+For further inquiries or support, reach out to [gharbiriadh16@gmail.com](mailto:gharbiriadh16@gmail.com).
+
+Happy coding!
