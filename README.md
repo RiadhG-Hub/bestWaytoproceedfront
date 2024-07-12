@@ -1,6 +1,6 @@
 # BestWayToProceedFront
 
-A Flutter package designed to assist blind individuals by utilizing a phone camera and the Gemini AI system to determine whether it is safe to proceed. This package leverages advanced AI technology to provide real-time feedback and enhance the safety and independence of visually impaired users.
+A Flutter Application designed to assist blind individuals by utilizing a phone camera and the Gemini AI system to determine whether it is safe to proceed. This package leverages advanced AI technology to provide real-time feedback and enhance the safety and independence of visually impaired users.
 
 ## Features
 
