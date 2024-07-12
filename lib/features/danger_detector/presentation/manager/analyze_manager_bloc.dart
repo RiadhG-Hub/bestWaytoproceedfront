@@ -14,7 +14,8 @@ part 'analyze_manager_event.dart';
 part 'analyze_manager_state.dart';
 
 /// The BLoC class responsible for managing the analysis process.
-class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> {
+class AnalyzeManagerBloc
+    extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> {
   FlutterTts flutterTts = FlutterTts();
 
   /// API key for the generative AI model.
@@ -56,15 +57,24 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
           final result = await comparator.compareImages(image: imageResult);
           log('AI analysis result: $result');
 
-          final int vibrationDuration = (100 - (result!.safetyPercentage ?? 0).toInt()).toInt();
+          final int vibrationDuration =
+              (100 - (result!.safetyPercentage ?? 0).toInt()).toInt();
 
-          Vibration.vibrate(duration: vibrationDuration, pattern: [500, 1000, 500, 2000], intensities: [1, 255]);
+          Vibration.vibrate(
+              duration: vibrationDuration,
+              pattern: [500, 1000, 500, 2000],
+              intensities: [1, 255]);
 
           // Perform further analysis and save data if needed
           final BestWayAnalyze bestWayAnalyze = BestWayAnalyze(result);
           final analyzeResult = await bestWayAnalyze.analyze();
           _speak(
-            texts: [analyzeResult.name, analyzeResult.name, result.proceedPhrase ?? "", result.roadType ?? ""],
+            texts: [
+              analyzeResult.name,
+              analyzeResult.name,
+              result.proceedPhrase ?? "",
+              result.roadType ?? ""
+            ],
           );
           // Dispose of the camera controller
           await controller!.dispose();
