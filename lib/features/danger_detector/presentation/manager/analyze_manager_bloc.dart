@@ -63,15 +63,26 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
           // Perform further analysis and save data if needed
           final BestWayAnalyze bestWayAnalyze = BestWayAnalyze(result);
           final analyzeResult = await bestWayAnalyze.analyze();
-          _speak(texts: [analyzeResult.name, analyzeResult.name, result.proceedPhrase ?? "", result.roadType ?? ""]);
+          _speak(
+            texts: [analyzeResult.name, analyzeResult.name, result.proceedPhrase ?? "", result.roadType ?? ""],
+          );
           // Dispose of the camera controller
           await controller!.dispose();
 
           // Emit success state with the analysis result
-          emit(TakePictureStartAnalyzeSuccess(analyzeResult, result));
+          emit(
+            TakePictureStartAnalyzeSuccess(
+              analyzeResult,
+              result,
+            ),
+          );
         } catch (e, s) {
           // Emit failure state with error details
-          emit(TakePictureStartAnalyzeFailed('Error: $e, Stack: $s'));
+          emit(
+            TakePictureStartAnalyzeFailed(
+              'Error: $e, Stack: $s',
+            ),
+          );
         }
       }
     });
