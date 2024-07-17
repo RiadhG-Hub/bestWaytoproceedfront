@@ -1,7 +1,6 @@
 import 'package:bestwaytoproceed/models/way_data.dart';
 import 'package:bestwaytoproceedanalyze/core/danger_class.dart';
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 /// A widget that displays the danger level and related data.
 ///
@@ -55,9 +54,14 @@ class DangerView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          LoadingAnimationWidget.halfTriangleDot(
-            color: getColorForDangerClass(dangerClass),
-            size: 200,
+          Container(
+            decoration: BoxDecoration(
+                color: getColorForDangerClass(
+                  dangerClass,
+                ),
+                shape: BoxShape.circle),
+            height: 200,
+            width: 200,
           ),
           Text(
             dangerClass.name,

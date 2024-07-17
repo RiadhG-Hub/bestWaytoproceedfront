@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:bestwaytoproceed/bestwaytoproceed.dart';
 import 'package:bestwaytoproceed/models/way_data.dart';
@@ -13,88 +13,102 @@ import 'package:vibration/vibration.dart';
 part 'analyze_manager_event.dart';
 part 'analyze_manager_state.dart';
 
-/// The BLoC class responsible for managing the analysis process.
-class AnalyzeManagerBloc
-    extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> {
-  FlutterTts flutterTts = FlutterTts();
+class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> {
+  final FlutterTts flutterTts;
+  final String apiKey;
+  late final ImageComparison comparator;
+  List<CameraDescription> cameras = [];
+  CameraController? controller;
 
-  /// API key for the generative AI model.
-  static const apiKey = "AIzaSyA2sQyyq3cYUqakisqqzkrTENm7GWu8w7g";
+  AnalyzeManagerBloc({required this.flutterTts, required this.apiKey}) : super(AnalyzeManagerInitial()) {
+    on<AnalyzeManagerEvent>((event, emit) async {
+      if (event is TakePictureStartAnalyze) {
+        await _handleTakePictureStartAnalyze(emit);
+      }
+    });
+  }
 
-  /// Instance of [ImageComparison] to handle image analysis.
-  ImageComparison comparator = ImageComparison(apiKey);
+  Future<void> _handleTakePictureStartAnalyze(Emitter<AnalyzeManagerState> emit) async {
+    try {
+      emit(TakePictureStartAnalyzeLoading());
+      await _initializeCameraIfNeeded();
+      final XFile imageResult = await _takePicture();
 
-  /// List of available camera descriptions.
-  static List<CameraDescription> cameras = [];
-  static CameraController? controller;
+      final WayData? result = await _analyzeImage(imageResult);
+      assert(result != null, 'result should not be null');
+      await _vibrateBasedOnResult(result!);
+      await _speakAnalysisResult(result);
+      await _disposeCameraControllerIfNeeded();
+
+      emit(TakePictureStartAnalyzeSuccess((result.safetyPercentage ?? 0).dangerClass, result));
+    } catch (e, s) {
+      await _disposeCameraControllerIfNeeded();
+      emit(TakePictureStartAnalyzeFailed('Error: $e, Stacktrace: $s'));
+    }
+  }
+
+  Future<void> _initializeCameraIfNeeded() async {
+    if (cameras.isEmpty) {
+      cameras = await availableCameras();
+    }
+    if (controller == null) {
+      controller = CameraController(cameras[0], ResolutionPreset.low);
+      await controller!.initialize();
+    }
+  }
+
+  // Group camera related methods
+  Future<XFile> _takePicture() async {
+    developer.log('Taking picture...');
+    final XFile imageResult = await controller!.takePicture();
+    developer.log("Picture taken successfully");
+    return imageResult;
+  }
+
+  Future<void> _disposeCameraControllerIfNeeded() async {
+    if (controller != null) {
+      await controller!.dispose();
+      controller = null;
+    }
+  }
+
+  // Group analysis related methods
+  Future<WayData?> _analyzeImage(XFile imageResult) async {
+    developer.log('Sending image to AI for analysis...');
+    final WayData? result = await comparator.analyzeImage(imageResult);
+    developer.log('AI analysis result: $result');
+    return result;
+  }
+
+  Future<void> _vibrateBasedOnResult(WayData result) async {
+    final int safetyPercentage = result.safetyPercentage?.toInt() ?? 0;
+    final int vibrationDuration = _calculateVibrationDuration(safetyPercentage);
+
+    const List<int> vibrationPattern = [500, 1000, 500, 2000];
+    const List<int> vibrationIntensities = [1, 255];
+
+    Vibration.vibrate(
+      duration: vibrationDuration,
+      pattern: vibrationPattern,
+      intensities: vibrationIntensities,
+    );
+  }
+
+  /// Calculates the vibration duration based on the safety percentage.
+  int _calculateVibrationDuration(int safetyPercentage) {
+    return 400 - (safetyPercentage * 4);
+  }
+
   Future<void> _speak({required List<String> texts}) async {
     for (var text in texts) {
       await flutterTts.speak(text);
     }
   }
 
-  /// Constructs an instance of [AnalyzeManagerBloc].
-  AnalyzeManagerBloc() : super(AnalyzeManagerInitial()) {
-    on<AnalyzeManagerEvent>((event, emit) async {
-      if (event is TakePictureStartAnalyze) {
-        try {
-          emit(TakePictureStartAnalyzeLoading());
-
-          // Initialize cameras if not already initialized
-          if (cameras.isEmpty) {
-            cameras = await availableCameras();
-          }
-
-          // Initialize the camera controller
-          controller = CameraController(cameras[0], ResolutionPreset.low);
-          await controller!.initialize();
-
-          log('Taking picture...');
-          final XFile imageResult = await controller!.takePicture();
-          log("Picture taken successfully");
-
-          log('Sending image to AI for analysis...');
-          final result = await comparator.compareImages(image: imageResult);
-          log('AI analysis result: $result');
-
-          final int vibrationDuration =
-              (100 - (result!.safetyPercentage ?? 0).toInt()).toInt();
-
-          Vibration.vibrate(
-              duration: vibrationDuration,
-              pattern: [500, 1000, 500, 2000],
-              intensities: [1, 255]);
-
-          // Perform further analysis and save data if needed
-          final BestWayAnalyze bestWayAnalyze = BestWayAnalyze(result);
-          final analyzeResult = await bestWayAnalyze.analyze();
-          _speak(
-            texts: [
-              analyzeResult.name,
-              analyzeResult.name,
-              result.proceedPhrase ?? "",
-              result.roadType ?? ""
-            ],
-          );
-          // Dispose of the camera controller
-          await controller!.dispose();
-
-          // Emit success state with the analysis result
-          emit(
-            TakePictureStartAnalyzeSuccess(
-              analyzeResult,
-              result,
-            ),
-          );
-        } catch (e, s) {
-          // Emit failure state with error details
-          emit(
-            TakePictureStartAnalyzeFailed(
-              'Error: $e, Stack: $s',
-            ),
-          );
-        }
-      }
-    });
+  Future<void> _speakAnalysisResult(WayData result) async {
+    final BestWayAnalyze bestWayAnalyze = BestWayAnalyze(result);
+    final analyzeResult = await bestWayAnalyze.analyze();
+    await _speak(
+        texts: [analyzeResult.name, analyzeResult.name + (result.proceedPhrase ?? "") + (result.roadType ?? "")]);
   }
 }
