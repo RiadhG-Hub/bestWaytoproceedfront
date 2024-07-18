@@ -16,9 +16,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 /// );
 /// ```
 class DefaultFirebaseOptions {
-  static const String _appIdKey = "appId";
-  static const String _iosApiKey = "iosApiKey";
-  static const String _androidApiKey = "androidApiKey";
+  static const String _appIdKey = "APP_ID";
+  static const String _iosApiKey = "IOS_API_KEY";
+  static const String _androidApiKey = "ANDROID_API_KEY";
   static FirebaseOptions currentPlatform() {
     if (kIsWeb) {
       throw UnsupportedError(

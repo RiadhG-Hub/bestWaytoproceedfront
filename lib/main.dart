@@ -10,46 +10,47 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 import 'firebase_options.dart';
 
+/// The entry point of the application.
 Future<void> main() async {
-  const String _geminiApiKey = "geminiApiKey";
+  // Ensure Flutter binding is initialized.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables from the .env file.
   await dotenv.load(fileName: ".env");
 
-  Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform(),
-  );
+  // Initialize Firebase.
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform());
 
-  //_cameras = await availableCameras();
-  ManagerService.apiKey = dotenv.get(_geminiApiKey);
+  // Initialize the ManagerService singleton.
+  final ManagerService managerService = ManagerService();
+
+  // Start the application with a BlocProvider for the AnalyzeManagerBloc.
   runApp(BlocProvider(
-    create: (context) => ManagerService.analyzeManagerBloc,
+    create: (context) => AnalyzeManagerBloc(
+      flutterTts: managerService.flutterTts,
+      apiKey: managerService.apiKey,
+    ),
     child: const MaterialApp(home: Home()),
   ));
 }
 
+/// A singleton service manager for handling TTS and API key.
 class ManagerService {
-  static String? _apiKey;
-  static final FlutterTts _flutterTts = FlutterTts();
-  static String get apiKey {
-    assert(_apiKey != null, "api key not defined");
-    return _apiKey!;
-  }
+  final FlutterTts flutterTts;
+  final String apiKey;
 
-  static set apiKey(String value) {
-    _apiKey = value;
-  }
+  // The single instance of ManagerService.
+  static final ManagerService _instance = ManagerService._internal();
 
-  static final AnalyzeManagerBloc analyzeManagerBloc = AnalyzeManagerBloc(
-    flutterTts: _flutterTts,
-    apiKey: apiKey,
-  );
-
-  static ManagerService? _instance;
-
+  /// Factory constructor to return the same instance of ManagerService.
   factory ManagerService() {
-    _instance ??= ManagerService._internalConstructor();
-    return _instance!;
+    return _instance;
   }
 
-  ManagerService._internalConstructor();
+  /// Internal constructor to initialize [flutterTts] and [apiKey].
+  ManagerService._internal()
+      : flutterTts = FlutterTts(),
+        apiKey = dotenv.get('GEMINI_API_KEY') {
+    assert(apiKey.isNotEmpty, 'Missing GEMINI_API_KEY in .env');
+  }
 }

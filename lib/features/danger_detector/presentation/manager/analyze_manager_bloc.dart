@@ -21,6 +21,7 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
   CameraController? controller;
 
   AnalyzeManagerBloc({required this.flutterTts, required this.apiKey}) : super(AnalyzeManagerInitial()) {
+    comparator = ImageComparison(apiKey);
     on<AnalyzeManagerEvent>((event, emit) async {
       if (event is TakePictureStartAnalyze) {
         await _handleTakePictureStartAnalyze(emit);
@@ -33,7 +34,7 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
       emit(TakePictureStartAnalyzeLoading());
       await _initializeCameraIfNeeded();
       final XFile imageResult = await _takePicture();
-
+      _speak(texts: ['analyse in progress']);
       final WayData? result = await _analyzeImage(imageResult);
       assert(result != null, 'result should not be null');
       await _vibrateBasedOnResult(result!);
@@ -41,9 +42,10 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
       await _disposeCameraControllerIfNeeded();
 
       emit(TakePictureStartAnalyzeSuccess((result.safetyPercentage ?? 0).dangerClass, result));
-    } catch (e, s) {
+    } catch (e) {
       await _disposeCameraControllerIfNeeded();
-      emit(TakePictureStartAnalyzeFailed('Error: $e, Stacktrace: $s'));
+      _speak(texts: ['Sorry, an internal error occurred. Please try again.']);
+      emit(TakePictureStartAnalyzeFailed('Error: $e'));
     }
   }
 
@@ -108,7 +110,8 @@ class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> 
   Future<void> _speakAnalysisResult(WayData result) async {
     final BestWayAnalyze bestWayAnalyze = BestWayAnalyze(result);
     final analyzeResult = await bestWayAnalyze.analyze();
-    await _speak(
-        texts: [analyzeResult.name, analyzeResult.name + (result.proceedPhrase ?? "") + (result.roadType ?? "")]);
+    await _speak(texts: [
+      "${analyzeResult.name} you are in ${(result.roadType ?? "unknown road")} ${result.proceedPhrase ?? ""}"
+    ]);
   }
 }

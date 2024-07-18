@@ -1,10 +1,11 @@
-import 'package:bestwaytoproceed/bestwaytoproceed.dart';
 import 'package:bestwaytoproceedfront/features/danger_detector/presentation/manager/analyze_manager_bloc.dart';
 import 'package:bestwaytoproceedfront/features/danger_detector/presentation/widgets/danger_view.dart';
+import 'package:bestwaytoproceedfront/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:volume_key_board/volume_key_board.dart';
+
+import '../widgets/error_view.dart';
 
 /// A [StatefulWidget] that represents the home screen of the application.
 class Home extends StatefulWidget {
@@ -15,14 +16,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final FlutterTts _flutterTts = FlutterTts();
-  final ImageComparison _imageComparison = ImageComparison('');
-  late final AnalyzeManagerBloc _analyzeManagerBloc;
+  final ManagerService _managerService = ManagerService();
+  late final AnalyzeManagerBloc _analyzeManagerBloc = AnalyzeManagerBloc(
+    flutterTts: _managerService.flutterTts,
+    apiKey: _managerService.apiKey,
+  );
 
   @override
   void initState() {
     super.initState();
-    _analyzeManagerBloc = AnalyzeManagerBloc(flutterTts: _flutterTts, apiKey: "");
+
     _setupVolumeKeyListener();
   }
 
@@ -45,22 +48,16 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    return Stack(
-      children: [
-        _buildBackgroundImage(screenSize),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: BlocBuilder<AnalyzeManagerBloc, AnalyzeManagerState>(
-              bloc: _analyzeManagerBloc,
-              buildWhen: (oldState, newState) => oldState != newState,
-              builder: (context, state) {
-                return _buildContent(state);
-              },
-            ),
-          ),
-        ),
-      ],
+    return Scaffold(
+      appBar: AppBar(),
+      //backgroundColor: Colors.transparent,
+      body: BlocBuilder<AnalyzeManagerBloc, AnalyzeManagerState>(
+        bloc: _analyzeManagerBloc,
+        buildWhen: (oldState, newState) => oldState != newState,
+        builder: (context, state) {
+          return _buildContent(state);
+        },
+      ),
     );
   }
 
@@ -68,11 +65,16 @@ class _HomeState extends State<Home> {
     if (state is TakePictureStartAnalyzeLoading) {
       return const CircularProgressIndicator();
     } else if (state is TakePictureStartAnalyzeFailed) {
-      return _buildErrorMessage(state.message);
+      return ErrorView(
+        errorMessage: state.message,
+        onRetry: () {
+          _analyzeManagerBloc.add(TakePictureStartAnalyze());
+        },
+      );
     } else if (state is TakePictureStartAnalyzeSuccess) {
       return DangerView(state.dangerClass, state.wayData);
     } else {
-      return _buildInitialView();
+      return const Text('init');
     }
   }
 
