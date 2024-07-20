@@ -16,24 +16,17 @@ class DangerView extends StatefulWidget {
   const DangerView(this.dangerClass, this.wayData, {super.key});
 
   @override
-  _DangerViewState createState() => _DangerViewState();
+  DangerViewState createState() => DangerViewState();
 }
 
-class _DangerViewState extends State<DangerView> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
+class DangerViewState extends State<DangerView> {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 4),
-      vsync: this,
-    )..forward();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -70,134 +63,74 @@ class _DangerViewState extends State<DangerView> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      getColorForDangerClass(widget.dangerClass).withOpacity(0.3),
-                      getColorForDangerClass(widget.dangerClass),
-                    ],
-                    stops: [0.7, 1.0],
-                  ),
-                ),
-                height: 200,
-                width: 200,
-                child: Center(
-                  child: RotationTransition(
-                    turns: _controller,
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                          width: 2.0,
-                        ),
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Positioned(
-                            top: 10,
-                            child: Icon(
-                              Icons.arrow_upward,
-                              color: Colors.white.withOpacity(0.7),
-                              size: 24,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            child: Icon(
-                              Icons.arrow_downward,
-                              color: Colors.white.withOpacity(0.7),
-                              size: 24,
-                            ),
-                          ),
-                          Positioned(
-                            left: 10,
-                            child: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white.withOpacity(0.7),
-                              size: 24,
-                            ),
-                          ),
-                          Positioned(
-                            right: 10,
-                            child: Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white.withOpacity(0.7),
-                              size: 24,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    widget.dangerClass.name,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          AnimatedOpacity(
-            opacity: 1.0,
-            duration: const Duration(seconds: 2),
-            child: Text(
-              'Safety Percentage: ${widget.wayData.safetyPercentage}%',
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.security,
+              size: 100,
+              color: Colors.blue,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Safety Percentage',
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey[800],
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          AnimatedOpacity(
-            opacity: 1.0,
-            duration: const Duration(seconds: 2),
-            child: Text(
-              'Proceed Phrase: ${widget.wayData.proceedPhrase}',
+            const SizedBox(height: 10),
+            Text(
+              '${widget.wayData.safetyPercentage}%',
+              style: TextStyle(
+                  fontSize: 50, fontWeight: FontWeight.bold, color: getColorForDangerClass(widget.dangerClass)),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Proceed Phrase',
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey[800],
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          AnimatedOpacity(
-            opacity: 1.0,
-            duration: const Duration(seconds: 2),
-            child: Text(
-              'Road Type: ${widget.wayData.roadType}',
+            const SizedBox(height: 10),
+            if (widget.wayData.proceedPhrase != null)
+              Text(
+                widget.wayData.proceedPhrase!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.black54,
+                ),
+              ),
+            const SizedBox(height: 20),
+            const Text(
+              'Road Type',
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey[800],
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            if (widget.wayData.roadType != null)
+              Text(
+                widget.wayData.roadType!,
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.black54,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:shake/shake.dart';
 
 import 'firebase_options.dart';
 
@@ -38,7 +39,7 @@ Future<void> main() async {
 class ManagerService {
   final FlutterTts flutterTts;
   final String apiKey;
-
+  late final ShakeDetector detector;
   // The single instance of ManagerService.
   static final ManagerService _instance = ManagerService._internal();
 
@@ -50,7 +51,10 @@ class ManagerService {
   /// Internal constructor to initialize [flutterTts] and [apiKey].
   ManagerService._internal()
       : flutterTts = FlutterTts(),
-        apiKey = dotenv.get('GEMINI_API_KEY') {
+        apiKey = dotenv.get('GEMINI_API_KEY'),
+        detector = ShakeDetector.waitForStart(onPhoneShake: () {
+          // Do stuff on phone shake
+        }) {
     assert(apiKey.isNotEmpty, 'Missing GEMINI_API_KEY in .env');
   }
 }

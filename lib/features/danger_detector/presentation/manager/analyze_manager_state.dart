@@ -36,3 +36,14 @@ class TakePictureStartAnalyzeFailed extends AnalyzeManagerState {
   /// Constructs an instance of [TakePictureStartAnalyzeFailed] with the provided [message].
   TakePictureStartAnalyzeFailed(this.message);
 }
+
+class ExtractObjectLoading extends AnalyzeManagerState {}
+
+class ExtractObjectSuccess extends AnalyzeManagerState {}
+
+class ExtractObjectFailed extends AnalyzeManagerState {
+  /// The error message.
+  final String message;
+
+  ExtractObjectFailed(this.message);
+}

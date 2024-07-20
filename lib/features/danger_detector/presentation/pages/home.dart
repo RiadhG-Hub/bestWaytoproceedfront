@@ -1,8 +1,11 @@
 import 'package:bestwaytoproceedfront/features/danger_detector/presentation/manager/analyze_manager_bloc.dart';
 import 'package:bestwaytoproceedfront/features/danger_detector/presentation/widgets/danger_view.dart';
+import 'package:bestwaytoproceedfront/features/danger_detector/presentation/widgets/init_view.dart';
+import 'package:bestwaytoproceedfront/features/danger_detector/presentation/widgets/loading_view.dart';
 import 'package:bestwaytoproceedfront/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shake/shake.dart';
 import 'package:volume_key_board/volume_key_board.dart';
 
 import '../widgets/error_view.dart';
@@ -16,7 +19,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  double _currentSliderValue = 20;
   final ManagerService _managerService = ManagerService();
+  late final ShakeDetector _shakeDetector;
   late final AnalyzeManagerBloc _analyzeManagerBloc = AnalyzeManagerBloc(
     flutterTts: _managerService.flutterTts,
     apiKey: _managerService.apiKey,
@@ -25,45 +30,84 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    _initialize();
+  }
 
+  /// Initializes the shake detector and sets up volume key listener.
+  void _initialize() {
+    _managerService.flutterTts.speak(
+        "Press volume up to take and analyze a picture. Press volume down to detect objects in the taken picture.");
     _setupVolumeKeyListener();
+    _setupShakeListener();
   }
 
-  @override
-  void dispose() {
-    _analyzeManagerBloc.close();
-    VolumeKeyBoard.instance.removeListener();
-    super.dispose();
+  /// Sets up the shake detector to start analyzing when the phone is shaken.
+  void _setupShakeListener() {
+    _shakeDetector = ShakeDetector.autoStart(
+        onPhoneShake: () {
+          if (_analyzeManagerBloc.state is! TakePictureStartAnalyzeLoading) {
+            _analyzeManagerBloc.add(TakePictureStartAnalyze());
+          }
+        },
+        minimumShakeCount: (_currentSliderValue / 5).toInt(),
+        shakeThresholdGravity: (_currentSliderValue / 70));
   }
 
+  /// Sets up the volume key listener to trigger actions based on volume key presses.
   void _setupVolumeKeyListener() {
     VolumeKeyBoard.instance.addListener((VolumeKey event) {
-      if (event == VolumeKey.up || event == VolumeKey.down) {
-        _analyzeManagerBloc.add(TakePictureStartAnalyze());
+      if (_analyzeManagerBloc.state is! TakePictureStartAnalyzeLoading) {
+        if (event == VolumeKey.up) {
+          _analyzeManagerBloc.add(TakePictureStartAnalyze());
+        } else if (event == VolumeKey.down) {
+          _analyzeManagerBloc.add(ExtractObject());
+        }
       }
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+  void dispose() {
+    _analyzeManagerBloc.close();
+    _shakeDetector.stopListening();
+    VolumeKeyBoard.instance.removeListener();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      //backgroundColor: Colors.transparent,
-      body: BlocBuilder<AnalyzeManagerBloc, AnalyzeManagerState>(
-        bloc: _analyzeManagerBloc,
-        buildWhen: (oldState, newState) => oldState != newState,
-        builder: (context, state) {
-          return _buildContent(state);
-        },
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Slider(
+            value: _currentSliderValue,
+            max: 100,
+            divisions: 5,
+            label: _currentSliderValue.round().toString(),
+            onChanged: (double value) {
+              setState(() {
+                _currentSliderValue = value;
+              });
+            },
+          ),
+          BlocBuilder<AnalyzeManagerBloc, AnalyzeManagerState>(
+            bloc: _analyzeManagerBloc,
+            buildWhen: (oldState, newState) => oldState != newState,
+            builder: (context, state) {
+              return _buildContent(state);
+            },
+          ),
+        ],
       ),
     );
   }
 
+  /// Builds the UI content based on the current state of [AnalyzeManagerBloc].
   Widget _buildContent(AnalyzeManagerState state) {
     if (state is TakePictureStartAnalyzeLoading) {
-      return const CircularProgressIndicator();
+      return const LoadingView();
     } else if (state is TakePictureStartAnalyzeFailed) {
       return ErrorView(
         errorMessage: state.message,
@@ -74,9 +118,7 @@ class _HomeState extends State<Home> {
     } else if (state is TakePictureStartAnalyzeSuccess) {
       return DangerView(state.dangerClass, state.wayData);
     } else {
-      return const Text('init');
+      return const InitView();
     }
   }
-
-// Existing helper methods for building UI elements are preserved
 }

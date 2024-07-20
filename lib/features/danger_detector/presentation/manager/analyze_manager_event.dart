@@ -11,3 +11,5 @@ sealed class AnalyzeManagerEvent {}
 /// This event triggers the sequence of actions to capture an image,
 /// send it for analysis, and process the result.
 class TakePictureStartAnalyze extends AnalyzeManagerEvent {}
+
+class ExtractObject extends AnalyzeManagerEvent {}
