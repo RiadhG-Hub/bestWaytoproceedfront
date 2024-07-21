@@ -19,7 +19,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  double _currentSliderValue = 20;
   final ManagerService _managerService = ManagerService();
   late final ShakeDetector _shakeDetector;
   late final AnalyzeManagerBloc _analyzeManagerBloc = AnalyzeManagerBloc(
@@ -49,8 +48,8 @@ class _HomeState extends State<Home> {
             _analyzeManagerBloc.add(TakePictureStartAnalyze());
           }
         },
-        minimumShakeCount: (_currentSliderValue / 5).toInt(),
-        shakeThresholdGravity: (_currentSliderValue / 70));
+        minimumShakeCount: 5,
+        shakeThresholdGravity: 1.3);
   }
 
   /// Sets up the volume key listener to trigger actions based on volume key presses.
@@ -81,17 +80,6 @@ class _HomeState extends State<Home> {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Slider(
-            value: _currentSliderValue,
-            max: 100,
-            divisions: 5,
-            label: _currentSliderValue.round().toString(),
-            onChanged: (double value) {
-              setState(() {
-                _currentSliderValue = value;
-              });
-            },
-          ),
           BlocBuilder<AnalyzeManagerBloc, AnalyzeManagerState>(
             bloc: _analyzeManagerBloc,
             buildWhen: (oldState, newState) => oldState != newState,
