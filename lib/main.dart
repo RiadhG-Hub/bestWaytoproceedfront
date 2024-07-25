@@ -62,7 +62,7 @@ class ManagerService {
 
   /// Internal constructor to initialize [flutterTts] and [apiKey].
   ManagerService._internal()
-      : flutterTts = FlutterTts(),
+      : flutterTts = FlutterTts()..awaitSpeakCompletion(true),
         apiKey = dotenv.get('GEMINI_API_KEY'),
         sentryDns = dotenv.get("SENTRY_DNS"),
         detector = ShakeDetector.waitForStart(onPhoneShake: () {

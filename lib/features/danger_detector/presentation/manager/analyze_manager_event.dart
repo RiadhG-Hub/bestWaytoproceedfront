@@ -10,6 +10,16 @@ sealed class AnalyzeManagerEvent {}
 ///
 /// This event triggers the sequence of actions to capture an image,
 /// send it for analysis, and process the result.
-class TakePictureStartAnalyze extends AnalyzeManagerEvent {}
+class TakePictureStartAnalyze extends AnalyzeManagerEvent {
+  final bool isSaveAnalyzeResultActive;
+  final bool isFetchLocationActive;
+
+  TakePictureStartAnalyze(
+    this.isSaveAnalyzeResultActive,
+    this.isFetchLocationActive,
+  );
+}
 
 class ExtractObject extends AnalyzeManagerEvent {}
+
+class AlternativeRoute extends AnalyzeManagerEvent {}

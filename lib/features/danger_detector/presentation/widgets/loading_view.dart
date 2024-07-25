@@ -11,9 +11,12 @@ class LoadingView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
-            strokeWidth: 6,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          Padding(
+            padding: EdgeInsets.only(top: 12),
+            child: CircularProgressIndicator(
+              strokeWidth: 6,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
           ),
           SizedBox(height: 20),
           Text(
