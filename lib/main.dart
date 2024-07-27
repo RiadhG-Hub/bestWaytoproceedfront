@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+//import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shake/shake.dart';
 
 import 'firebase_options.dart';
@@ -27,23 +27,26 @@ Future<void> main() async {
   final ManagerService managerService = ManagerService();
 
   // Start the application with a BlocProvider for the AnalyzeManagerBloc.
-  await SentryFlutter.init((options) {
-    options.dsn = managerService.sentryDns;
-    // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-    // We recommend adjusting this value in production.
-    options.tracesSampleRate = 1.0;
-    // The sampling rate for profiling is relative to tracesSampleRate
-    // Setting to 1.0 will profile 100% of sampled transactions:
-    // Note: Profiling alpha is available for iOS and macOS since SDK version 7.12.0
-    options.profilesSampleRate = 1.0;
-  },
-      appRunner: () => runApp(BlocProvider(
-            create: (context) => AnalyzeManagerBloc(
-              flutterTts: managerService.flutterTts,
-              apiKey: managerService.apiKey,
-            ),
-            child: const MaterialApp(home: Home()),
-          )));
+  // await SentryFlutter.init((options) {
+  //   options.dsn = managerService.sentryDns;
+  //   // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+  //   // We recommend adjusting this value in production.
+  //   options.tracesSampleRate = 1.0;
+  //   // The sampling rate for profiling is relative to tracesSampleRate
+  //   // Setting to 1.0 will profile 100% of sampled transactions:
+  //   // Note: Profiling alpha is available for iOS and macOS since SDK version 7.12.0
+  //   options.profilesSampleRate = 1.0;
+  // },
+  //appRunner: () =>
+  runApp(BlocProvider(
+    create: (context) => AnalyzeManagerBloc(
+      flutterTts: managerService.flutterTts,
+      apiKey: managerService.apiKey,
+    ),
+    child: const MaterialApp(home: Home()),
+  ));
+
+  //));
 }
 
 /// A singleton service manager for handling TTS and API key.

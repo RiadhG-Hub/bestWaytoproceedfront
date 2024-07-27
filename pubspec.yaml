@@ -23,22 +23,23 @@ dependencies:
     git:
       url: https://github.com/riadhrahma/bestwaytoproceedanalyze.git
       ref: dev
+  shake:
+    git:
+        url: https://github.com/riadhrahma/shake_upgraded.git
+        ref: dev
   camera: ^0.11.0+1 # Camera plugin for capturing pictures and video
-  video_player: ^2.8.7 # Video player plugin for playing videos
-  image: ^4.2.0 # Image processing library
   vibration: ^1.9.0 # Vibration feedback for mobile devices
   bloc: any # Business Logic Component pattern for state management
   flutter_bloc: any # Flutter implementation of the BLoC pattern
   firebase_core: ^2.32.0 # Core Firebase SDK for initializing Firebase
   volume_key_board: ^0.0.1 # Volume key detection for controlling volume
-  loading_animation_widget: ^1.2.1 # Animated loading widgets
   dotenv: ^4.2.0 # Library for loading environment variables from a .env file
   flutter_dotenv: ^5.1.0 # Flutter binding for the dotenv package
-  shake: ^2.2.0 # Shake detection for triggering actions
   meta: ^1.12.0 # Annotations for enhanced code analysis
-  sentry_flutter: ^8.3.0
+  #sentry_flutter: ^8.3.0
   shared_preferences: ^2.2.3
   geolocator: ^12.0.0
+
 
 dev_dependencies:
   flutter_test:

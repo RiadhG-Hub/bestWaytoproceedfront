@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
           ));
         }
       },
-      minimumShakeCount: _minimumShakeCount,
+      //minimumShakeCount: _minimumShakeCount,
       shakeThresholdGravity: _shakeThresholdGravity,
       shakeCountResetTime: _shakeCountResetTime,
     );
@@ -237,7 +237,7 @@ class _HomeState extends State<Home> {
                   .map((int value) {
                 return DropdownMenuItem<int>(
                   value: value,
-                  child: Text(value.toString()),
+                  child: Text("${value}ms"),
                 );
               }).toList(),
               onChanged: (int? newValue) {
