@@ -49,15 +49,11 @@ class _HomeState extends State<Home> {
 
   Future<void> _loadSettings() async {
     _minimumShakeCount = await _settingsRepository.getMinimumShakeCount();
-    _shakeThresholdGravity =
-        await _settingsRepository.getShakeThresholdGravity();
+    _shakeThresholdGravity = await _settingsRepository.getShakeThresholdGravity();
     _shakeCountResetTime = await _settingsRepository.getShakeCountResetTime();
-    _isShakeDetectorActive =
-        await _settingsRepository.getIsShakeDetectorActive();
-    _isSaveAnalyzeResultActive =
-        await _settingsRepository.getIsSaveAnalyzeResultActive();
-    _isFetchLocationActive =
-        await _settingsRepository.getIsFetchLocationActive();
+    _isShakeDetectorActive = await _settingsRepository.getIsShakeDetectorActive();
+    _isSaveAnalyzeResultActive = await _settingsRepository.getIsSaveAnalyzeResultActive();
+    _isFetchLocationActive = await _settingsRepository.getIsFetchLocationActive();
     _isQuickResultActive = await _settingsRepository.getIsQuickResultActive();
     setState(() {});
     _setupShakeListener();
@@ -73,10 +69,8 @@ class _HomeState extends State<Home> {
     _shakeDetector = ShakeDetector.autoStart(
       onPhoneShake: () {
         if (_analyzeManagerBloc.state is! TakePictureStartAnalyzeLoading) {
-          _analyzeManagerBloc.add(TakePictureStartAnalyze(
-              _isSaveAnalyzeResultActive,
-              _isFetchLocationActive,
-              _isQuickResultActive));
+          _analyzeManagerBloc
+              .add(TakePictureStartAnalyze(_isSaveAnalyzeResultActive, _isFetchLocationActive, _isQuickResultActive));
         }
       },
       minimumShakeCount: _minimumShakeCount,
@@ -92,16 +86,13 @@ class _HomeState extends State<Home> {
     VolumeKeyBoard.instance.addListener((VolumeKey event) {
       if (_analyzeManagerBloc.state is! TakePictureStartAnalyzeLoading) {
         if (event == VolumeKey.up) {
-          _analyzeManagerBloc.add(TakePictureStartAnalyze(
-              _isSaveAnalyzeResultActive,
-              _isFetchLocationActive,
-              _isQuickResultActive));
+          _analyzeManagerBloc
+              .add(TakePictureStartAnalyze(_isSaveAnalyzeResultActive, _isFetchLocationActive, _isQuickResultActive));
         } else if (event == VolumeKey.down) {
           _volumeDownPressCount++;
 
           if (_volumeDownPressCount == 1) {
-            _volumeDownPressTimer =
-                Timer(const Duration(milliseconds: 500), () {
+            _volumeDownPressTimer = Timer(const Duration(milliseconds: 500), () {
               if (_volumeDownPressCount == 1) {
                 _analyzeManagerBloc.add(ExtractObject());
               }
@@ -143,15 +134,6 @@ class _HomeState extends State<Home> {
               return _buildContent(state);
             },
           ),
-          MaterialButton(
-            onPressed: () {
-              _analyzeManagerBloc.add(TakePictureStartAnalyze(
-                  _isSaveAnalyzeResultActive,
-                  _isFetchLocationActive,
-                  _isQuickResultActive));
-            },
-            child: const Text("click"),
-          )
         ],
       ),
     );
@@ -196,10 +178,7 @@ class _HomeState extends State<Home> {
             title: const Text('Minimum Shake Count'),
             trailing: DropdownButton<int>(
               value: _minimumShakeCount,
-              items: (_isShakeDetectorActive
-                      ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-                      : <int>[])
-                  .map((int value) {
+              items: (_isShakeDetectorActive ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] : <int>[]).map((int value) {
                 return DropdownMenuItem<int>(
                   value: value,
                   child: Text(value.toString()),
@@ -221,10 +200,7 @@ class _HomeState extends State<Home> {
             ),
             trailing: DropdownButton<double>(
               value: _shakeThresholdGravity,
-              items: (_isShakeDetectorActive
-                      ? [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
-                      : <double>[])
-                  .map((double value) {
+              items: (_isShakeDetectorActive ? [1.0, 1.1, 1.2, 1.3, 1.4, 1.5] : <double>[]).map((double value) {
                 return DropdownMenuItem<double>(
                   value: value,
                   child: Text(value.toString()),
@@ -292,8 +268,8 @@ class _HomeState extends State<Home> {
               'Fetch location',
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
             ),
-            subtitle: const Text(
-                "Activating Fetch location might increase the time needed to complete image analysis."),
+            subtitle:
+                const Text("Activating Fetch location might increase the time needed to complete image analysis."),
             value: _isFetchLocationActive,
             onChanged: (bool value) {
               setState(() {
@@ -332,16 +308,11 @@ class _HomeState extends State<Home> {
                 _isSaveAnalyzeResultActive = true;
                 _isFetchLocationActive = true;
                 _settingsRepository.setMinimumShakeCount(_minimumShakeCount);
-                _settingsRepository
-                    .setShakeThresholdGravity(_shakeThresholdGravity);
-                _settingsRepository
-                    .setShakeCountResetTime(_shakeCountResetTime);
-                _settingsRepository
-                    .setIsShakeDetectorActive(_isShakeDetectorActive);
-                _settingsRepository
-                    .setIsSaveAnalyzeResultActive(_isSaveAnalyzeResultActive);
-                _settingsRepository
-                    .setIsFetchLocationActive(_isFetchLocationActive);
+                _settingsRepository.setShakeThresholdGravity(_shakeThresholdGravity);
+                _settingsRepository.setShakeCountResetTime(_shakeCountResetTime);
+                _settingsRepository.setIsShakeDetectorActive(_isShakeDetectorActive);
+                _settingsRepository.setIsSaveAnalyzeResultActive(_isSaveAnalyzeResultActive);
+                _settingsRepository.setIsFetchLocationActive(_isFetchLocationActive);
                 _setupShakeListener();
               });
             },
@@ -358,10 +329,8 @@ class _HomeState extends State<Home> {
       return ErrorView(
         errorMessage: state.message,
         onRetry: () {
-          _analyzeManagerBloc.add(TakePictureStartAnalyze(
-              _isSaveAnalyzeResultActive,
-              _isFetchLocationActive,
-              _isQuickResultActive));
+          _analyzeManagerBloc
+              .add(TakePictureStartAnalyze(_isSaveAnalyzeResultActive, _isFetchLocationActive, _isQuickResultActive));
         },
       );
     } else if (state is TakePictureStartAnalyzeSuccess) {
