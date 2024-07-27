@@ -90,7 +90,9 @@ class DangerViewState extends State<DangerView> {
             Text(
               '${widget.wayData.safetyPercentage}%',
               style: TextStyle(
-                  fontSize: 50, fontWeight: FontWeight.bold, color: getColorForDangerClass(widget.dangerClass)),
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  color: getColorForDangerClass(widget.dangerClass)),
             ),
             const SizedBox(height: 20),
             const Text(

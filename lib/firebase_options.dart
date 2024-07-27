@@ -2,7 +2,8 @@
 // ignore_for_file: type=lint
 
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
@@ -63,7 +64,9 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions android({required String apiKey, required String appId}) => FirebaseOptions(
+  static FirebaseOptions android(
+          {required String apiKey, required String appId}) =>
+      FirebaseOptions(
         apiKey: apiKey,
         appId: appId,
         messagingSenderId: '224943458926',
@@ -71,7 +74,8 @@ class DefaultFirebaseOptions {
         storageBucket: 'bestwaytoproceed.appspot.com',
       );
 
-  static FirebaseOptions ios({required String apiKey, required String appId}) => FirebaseOptions(
+  static FirebaseOptions ios({required String apiKey, required String appId}) =>
+      FirebaseOptions(
         apiKey: apiKey,
         appId: appId,
         messagingSenderId: '224943458926',

@@ -13,11 +13,10 @@ sealed class AnalyzeManagerEvent {}
 class TakePictureStartAnalyze extends AnalyzeManagerEvent {
   final bool isSaveAnalyzeResultActive;
   final bool isFetchLocationActive;
+  final bool isQuickResultActive;
 
-  TakePictureStartAnalyze(
-    this.isSaveAnalyzeResultActive,
-    this.isFetchLocationActive,
-  );
+  TakePictureStartAnalyze(this.isSaveAnalyzeResultActive,
+      this.isFetchLocationActive, this.isQuickResultActive);
 }
 
 class ExtractObject extends AnalyzeManagerEvent {}

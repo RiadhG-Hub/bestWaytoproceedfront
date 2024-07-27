@@ -21,7 +21,8 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
   // Initialize Firebase.
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform());
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform());
 
   // Initialize the ManagerService singleton.
   final ManagerService managerService = ManagerService();

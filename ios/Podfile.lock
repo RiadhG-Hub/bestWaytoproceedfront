@@ -1090,32 +1090,20 @@ PODS:
     - gRPC-Core/Privacy (= 1.62.5)
   - gRPC-Core/Interface (1.62.5)
   - gRPC-Core/Privacy (1.62.5)
-  - image_picker_ios (0.0.1):
-    - Flutter
   - leveldb-library (1.22.5)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
   - nanopb/decode (2.30910.0)
   - nanopb/encode (2.30910.0)
-  - package_info_plus (0.4.5):
-    - Flutter
   - PromisesObjC (2.4.0)
   - sensors_plus (0.0.1):
     - Flutter
-  - Sentry/HybridSDK (8.30.1)
-  - sentry_flutter (8.4.0):
-    - Flutter
-    - FlutterMacOS
-    - Sentry/HybridSDK (= 8.30.1)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
   - vibration (1.7.5):
     - Flutter
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - volume_key_board (0.0.1):
     - Flutter
 
@@ -1127,13 +1115,9 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
-  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
-  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - volume_key_board (from `.symlinks/plugins/volume_key_board/ios`)
 
 SPEC REPOS:
@@ -1154,7 +1138,6 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
-    - Sentry
 
 EXTERNAL SOURCES:
   camera_avfoundation:
@@ -1171,20 +1154,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_tts/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
-  image_picker_ios:
-    :path: ".symlinks/plugins/image_picker_ios/ios"
-  package_info_plus:
-    :path: ".symlinks/plugins/package_info_plus/ios"
   sensors_plus:
     :path: ".symlinks/plugins/sensors_plus/ios"
-  sentry_flutter:
-    :path: ".symlinks/plugins/sentry_flutter/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   vibration:
     :path: ".symlinks/plugins/vibration/ios"
-  video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   volume_key_board:
     :path: ".symlinks/plugins/volume_key_board/ios"
 
@@ -1209,17 +1184,12 @@ SPEC CHECKSUMS:
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   "gRPC-C++": e725ef63c4475d7cdb7e2cf16eb0fde84bd9ee51
   gRPC-Core: eee4be35df218649fe66d721a05a7f27a28f069b
-  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
-  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  sensors_plus: 5717760720f7e6acd96fdbd75b7428f5ad755ec2
-  Sentry: 514a3ea653886e9a48c6287d8b7bf05ec24bf3be
-  sentry_flutter: edc037f7af0dc1512d6c33a5c2c7c838bd0d6806
+  sensors_plus: 18a9b346c43e157da17d2c8e99def703f9efb9d8
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
-  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
   volume_key_board: 544501f83cce6478414091fb47f614471108b220
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796

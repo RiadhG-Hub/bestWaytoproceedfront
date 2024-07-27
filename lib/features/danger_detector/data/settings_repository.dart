@@ -89,4 +89,17 @@ class SettingsRepository {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('IsFetchLocationActive', value);
   }
+
+  Future<bool> getIsQuickResultActive() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('IsQuickResultActive') ?? true;
+  }
+
+  /// Saves the status of the analyze result saving to SharedPreferences.
+  ///
+  /// [value] is the boolean value indicating if the analyze result saving is active.
+  Future<void> setIsQuickResultActive(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('IsQuickResultActive', value);
+  }
 }
