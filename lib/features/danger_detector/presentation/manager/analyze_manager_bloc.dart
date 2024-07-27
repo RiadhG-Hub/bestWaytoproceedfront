@@ -19,8 +19,7 @@ part 'analyze_manager_state.dart';
 ///
 /// This Bloc utilizes various packages to interact with the camera, perform image analysis, provide
 /// text-to-speech feedback, and handle vibration alerts based on the analysis results.
-class AnalyzeManagerBloc
-    extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> {
+class AnalyzeManagerBloc extends Bloc<AnalyzeManagerEvent, AnalyzeManagerState> {
   final FlutterTts flutterTts; // Text-to-speech instance
   final String apiKey; // API key for image comparison
   late final ImageComparison comparator; // Image comparison instance
@@ -30,13 +29,12 @@ class AnalyzeManagerBloc
   WayData? _latestAnalyzeResult; // Latest analysis result
 
   /// Constructor for initializing the Bloc with required dependencies.
-  AnalyzeManagerBloc({required this.flutterTts, required this.apiKey})
-      : super(AnalyzeManagerInitial()) {
+  AnalyzeManagerBloc({required this.flutterTts, required this.apiKey}) : super(AnalyzeManagerInitial()) {
     comparator = ImageComparison(apiKey);
     on<AnalyzeManagerEvent>((event, emit) async {
       if (event is TakePictureStartAnalyze) {
         await _handleTakePictureStartAnalyze(
-            emit, event.isSaveAnalyzeResultActive, event.isFetchLocationActive);
+            emit, event.isSaveAnalyzeResultActive, event.isFetchLocationActive, event.isQuickResultActive);
       }
       if (event is ExtractObject) {
         await _handleExtractObject(emit);
@@ -73,8 +71,7 @@ class AnalyzeManagerBloc
         }
 
         // Join detected objects with "and" for a readable announcement
-        final detectedObjects =
-            (_latestAnalyzeResult!.objects ?? []).toSet().join(" and ");
+        final detectedObjects = (_latestAnalyzeResult!.objects ?? []).toSet().join(" and ");
 
         // Announce the detected objects
         await _speak(texts: ["The objects detected are $detectedObjects"]);
@@ -82,22 +79,19 @@ class AnalyzeManagerBloc
         return;
       } else {
         // Prompt the user to take a picture first if no result is available
-        await _speak(
-            texts: ["You should take a picture first to activate this option"]);
+        await _speak(texts: ["You should take a picture first to activate this option"]);
         emit(ExtractObjectFailed("No analysis result available"));
         return;
       }
     } catch (error) {
       // Handle any errors that occur during the process
-      await _speak(
-          texts: ['Sorry, an internal error occurred. Please try again.']);
+      await _speak(texts: ['Sorry, an internal error occurred. Please try again.']);
       emit(ExtractObjectFailed('Error: $error'));
       return;
     }
   }
 
-  Future<void> _handleAlternativeRoute(
-      Emitter<AnalyzeManagerState> emit) async {
+  Future<void> _handleAlternativeRoute(Emitter<AnalyzeManagerState> emit) async {
     try {
       // Check if there is a result available from the latest analysis
       if (_latestAnalyzeResult != null) {
@@ -108,15 +102,13 @@ class AnalyzeManagerBloc
         return;
       } else {
         // Prompt the user to take a picture first if no result is available
-        await _speak(
-            texts: ["You should take a picture first to activate this option"]);
+        await _speak(texts: ["You should take a picture first to activate this option"]);
         emit(ExtractObjectFailed("No analysis result available"));
         return;
       }
     } catch (error) {
       // Handle any errors that occur during the process
-      await _speak(
-          texts: ['Sorry, an internal error occurred. Please try again.']);
+      await _speak(texts: ['Sorry, an internal error occurred. Please try again.']);
       emit(ExtractObjectFailed('Error: $error'));
       return;
     }
@@ -128,8 +120,8 @@ class AnalyzeManagerBloc
   /// and provides feedback based on the analysis result.
   ///
   /// [emit] The function used to emit states to the [AnalyzeManagerState].
-  Future<void> _handleTakePictureStartAnalyze(Emitter<AnalyzeManagerState> emit,
-      bool saveResult, bool captLocation) async {
+  Future<void> _handleTakePictureStartAnalyze(
+      Emitter<AnalyzeManagerState> emit, bool saveResult, bool captLocation, bool? quickAnalyse) async {
     try {
       Position? positionResult;
       emit(TakePictureStartAnalyzeLoading());
@@ -139,14 +131,13 @@ class AnalyzeManagerBloc
       if (captLocation) {
         positionResult = await LocatorRepository.determinePosition();
       }
-      final WayData? result = await _analyzeImage(imageResult, positionResult);
+      final WayData? result = await _analyzeImage(imageResult, positionResult, quickAnalyse);
       assert(result != null, 'result should not be null');
       await _vibrateBasedOnResult(result!);
       await _speakAnalysisResult(result, saveResult);
       await _disposeCameraControllerIfNeeded();
       _latestAnalyzeResult = result;
-      emit(TakePictureStartAnalyzeSuccess(
-          (result.safetyPercentage ?? 0).dangerClass, result));
+      emit(TakePictureStartAnalyzeSuccess((result.safetyPercentage ?? 0).dangerClass, result));
       return;
     } catch (e) {
       await _disposeCameraControllerIfNeeded();
@@ -192,10 +183,12 @@ class AnalyzeManagerBloc
   /// Sends the image to the AI for analysis and returns the result.
   ///
   /// [imageResult] The image to be analyzed.
-  Future<WayData?> _analyzeImage(XFile imageResult, Position? position) async {
+  Future<WayData?> _analyzeImage(XFile imageResult, Position? position, bool? quickAnalyse) async {
     developer.log('Sending image to AI for analysis...');
-    final WayData? result = await comparator.analyzeImage(imageResult,
-        "latitude:${position?.latitude} longitude:${position?.longitude}");
+    final WayData? result = await comparator.analyzeImage(
+        image: imageResult,
+        position: "latitude:${position?.latitude} longitude:${position?.longitude}",
+        quickAnalyse: quickAnalyse);
     developer.log('AI analysis result: $result');
     return result;
   }
