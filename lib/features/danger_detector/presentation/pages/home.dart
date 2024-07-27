@@ -134,13 +134,6 @@ class _HomeState extends State<Home> {
               return _buildContent(state);
             },
           ),
-          MaterialButton(
-            onPressed: () {
-              _analyzeManagerBloc.add(
-                  TakePictureStartAnalyze(_isSaveAnalyzeResultActive, _isFetchLocationActive, _isQuickResultActive));
-            },
-            child: const Text('click'),
-          )
         ],
       ),
     );
