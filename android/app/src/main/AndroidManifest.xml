@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.VIBRATE"/>
     <application
-        android:label="bestwaytoproceedfront"
-        android:name="${applicationName}"
+        android:label="Best way to proceed "
+        android:name="Best way to proceed"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
         >
