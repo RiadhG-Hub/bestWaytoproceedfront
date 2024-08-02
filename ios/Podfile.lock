@@ -999,8 +999,6 @@ PODS:
     - nanopb (< 2.30911.0, >= 2.30908.0)
   - FirebaseSharedSwift (10.29.0)
   - Flutter (1.0.0)
-  - flutter_siri_suggestions (0.0.1):
-    - Flutter
   - flutter_tts (0.0.1):
     - Flutter
   - geolocator_apple (1.2.0):
@@ -1122,7 +1120,6 @@ DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
-  - flutter_siri_suggestions (from `.symlinks/plugins/flutter_siri_suggestions/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -1163,8 +1160,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
-  flutter_siri_suggestions:
-    :path: ".symlinks/plugins/flutter_siri_suggestions/ios"
   flutter_tts:
     :path: ".symlinks/plugins/flutter_tts/ios"
   geolocator_apple:
@@ -1198,7 +1193,6 @@ SPEC CHECKSUMS:
   FirebaseFirestoreInternal: 04b8afa77b4e5b84e86ab5ad985193e9573239fa
   FirebaseSharedSwift: 20530f495084b8d840f78a100d8c5ee613375f6e
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_siri_suggestions: 226fb7ef33d25d3fe0d4aa2a8bcf4b72730c466f
   flutter_tts: 0f492aab6accf87059b72354fcb4ba934304771d
   geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
