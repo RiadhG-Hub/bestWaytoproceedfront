@@ -31,7 +31,7 @@ dependencies:
   vibration: ^1.9.0 # Vibration feedback for mobile devices
   bloc: any # Business Logic Component pattern for state management
   flutter_bloc: any # Flutter implementation of the BLoC pattern
-  firebase_core: ^2.32.0 # Core Firebase SDK for initializing Firebase
+  firebase_core: ^3.6.0 # Core Firebase SDK for initializing Firebase
   volume_key_board: ^0.0.1 # Volume key detection for controlling volume
   dotenv: ^4.2.0 # Library for loading environment variables from a .env file
   flutter_dotenv: ^5.1.0 # Flutter binding for the dotenv package
